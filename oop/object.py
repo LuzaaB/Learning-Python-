@@ -98,7 +98,7 @@ class Student(SchoolMember):
     def __init__(self, name, age, marks):
         # super().__init__(name, age)
         SchoolMember.__init__(self, name, age)
-        self.maarks = marks
+        self.marks = marks
         
     def tell(self):
         SchoolMember.tell(self)
