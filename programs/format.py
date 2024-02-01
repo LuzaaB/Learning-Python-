@@ -1,3 +1,4 @@
+# Format method is not needed in detail
 # Using Format method
 
 print('I love {} for {}'.format('Geek','Geeks'))
@@ -9,5 +10,19 @@ print('{1} and {0}'.format('Geeks','Protal'))
 # shortcut
 print(f"I love {'Geeks'} for \"{'Geeks'}!\"")
 
-# using format with numbers
-print
+
+
+# using String method - .center .ljust .rjust
+cstr = "I love geeksforgeeks"
+
+# Printing the center aligned string 
+print("Center aligned string : ")
+print(cstr.center(40,'#'))
+
+# Printing the left aligned string
+print("Left aligned string : ")
+print(cstr.ljust(40,'-'))
+
+# Printing the right aligned string
+print("Right aligned string : ")
+print(cstr.rjust(40,'-'))
