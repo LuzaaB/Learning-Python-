@@ -37,32 +37,36 @@ chapter_list = chpt_list.json()
 ''' To access chapters '''
 # for chap in chapter_list["data"] :
 #     chapter = chap["id"]
-chapter = chapter_list["data"][0]["id"]
-print(chapter)
+chapter_id = chapter_list["data"][0]["id"]
+print(chapter_id)
 # vol = "60dadee7-0d8b-4ebc-b3a8-887e174f87a5"
-CHAPTER_URL = "https://api.mangadex.org/at-home/server/" + chapter
+CHAPTER_URL = "https://api.mangadex.org/at-home/server/" + chapter_id
 print(CHAPTER_URL)
+# chapter_json = requests.get(CHAPTER_URL)
+# chap_json = chapter_json.json()
+# text = json.dumps(chap_json, indent=4)
+# with open("chapter_id.json","w") as chapterID:
+#     chapterID.write(text)
+    
 
-
-
-"""FOR DOWNLOADING"""
-# # r = requests.get(f"{base_url}/at-home/server/{chapter_id}")
+# """FOR DOWNLOADING"""
+# # # r = requests.get(f"{base_url}/at-home/server/{chapter_id}")
 # CHAPTERS = requests.get(CHAPTER_URL)
-# r_json = CHAPTERS.json()
+# CHAPTER_json = CHAPTERS.json()
 
-# host = r_json["baseUrl"]
-# chapter_hash = r_json["chapter"]["hash"]
-# data = r_json["chapter"]["data"]
-# # data_saver = r_json["chapter"]["dataSaver"]
+# HOST_URL = CHAPTER_json["baseUrl"]
+# CHAPTER_HASH = CHAPTER_json["chapter"]["hash"]
+# data = CHAPTER_json["chapter"]["data"]
+# # # data_saver = CHAPTER_json["chapter"]["dataSaver"]
 
 
-# folder_path = "Mangadex/"+"60dadee7-0d8b-4ebc-b3a8-887e174f87a5"
+# folder_path = "Mangadex/"+chapter_id
 # os.makedirs(folder_path, exist_ok=True)
 
 
 
 # for page in data:
-#     DOWNLOAD_URL = host + "/data/" +  chapter_hash +  "/" + page
+#     DOWNLOAD_URL = HOST_URL + "/data/" +  CHAPTER_URL +  "/" + page
     
 #     R = requests.get(DOWNLOAD_URL)
     

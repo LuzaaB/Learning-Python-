@@ -1,0 +1,29 @@
+{
+    "result": "ok",
+    "baseUrl": "https://uploads.mangadex.org",
+    "chapter": {
+        "hash": "946f2639a6aa4480030b8c902f78d818",
+        "data": [
+            "1-47f9e37dc8ea9ca01579b5be08128d76aa5474945bab627060aa435d78c3d993.jpg",
+            "2-b6e91ba5ba983d09632b81d1fbb9ec39c122acd912c76fb57c397c04501c84ff.jpg",
+            "3-ac9d547501eb69f23facf20addf40164f9cde5fca0a577c9cefa725be1aeae81.jpg",
+            "4-08e7aefc9319a2a68b675fcc2ced870ca468023c3a578133b62c92f9ab69f95e.jpg",
+            "5-bdb0859983ddba5b0e6e68db3e393c230607db2169b1828ec0ff6b4b52c22170.jpg",
+            "6-8e20166d75a9f3dbcba24139008a5ca0a6769b6d00a3ca68e50e6f65a24a446f.jpg",
+            "7-90f1843ac43876fb0346122f7f17458492090e608da274ba531905fb1f24e4ea.jpg",
+            "8-1b5975cb083e7a1b97f13a3a94dc571915d95ccc65642c38af5b14ce6bddc01c.jpg",
+            "9-fe2e689a63500ae5388a2b3a33b5e1528f863ac1979745b07124ee966b28590c.jpg"
+        ],
+        "dataSaver": [
+            "1-9f8399ef095b73a252dc7671d927f153e78017879c341c1f77b379498d8682b5.jpg",
+            "2-c83677762223c64bbba94980c80ddbb11871236516c9cb94615ed60e2dd99460.jpg",
+            "3-e50d90b73397fc1ebced1b61082d87b26a4c095bc5c0de16852434273b59247c.jpg",
+            "4-dd049a0c54108499fb7ef15c6508e6187ad11412ad87e4dd0e34530e883e977c.jpg",
+            "5-0fa2f6be42ddcf07376044a55ea24e5d816c92035dab839ef6ae1f8d42a262e6.jpg",
+            "6-03e33ab6e6a60d137b76bf163c9b9f244f6e55d78ae427e3dc646084d94f8bce.jpg",
+            "7-8fe881c46fd434e20e48bf2304c6fbde7179df8ff0a970ccf033c956be96fe66.jpg",
+            "8-6d62a815d065591201d37ce6b04eda0cde441d48cab1fbafc1aab7c5ccd43bc3.jpg",
+            "9-298251ad440b9853118c4022004124111ea7026e2d61728675212b18a500204a.jpg"
+        ]
+    }
+}
