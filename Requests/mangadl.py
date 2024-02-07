@@ -7,7 +7,7 @@ CHAPTER_LIST_URL = f"{SEARCH_URL}/"
 
 
 def write_json(text_data):
-    with open("manga_json.json", "w") as f:
+    with open("manga.json", "w") as f:
         f.write(text_data)
 
 
