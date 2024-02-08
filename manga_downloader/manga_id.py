@@ -5,13 +5,12 @@ import os
 import dataclasses
 import pathlib    ## proper directory structure, and check if already exists
 
-import sys          ## LATER, but before argpare
+import sys          ## LATER, but before argparse
 import argparse     ### argument parsing. FOR LATER>
 
 ## os.path or pathlib  
 
 languages = ["en"]
-
 BASE_URL = "https://api.mangadex.org"
 SEARCH_MANGA_URL = BASE_URL + "/manga"
 
@@ -59,6 +58,42 @@ def get_chap_url_json(chap_url_json_response):
     return text
  
  
+
+# """ For retrieving an IMAGE / DOWNLOADING single image"""
+# def download_one_page(image_download_response):
+#     img_hash = image_download_response["chapter"]["hash"]
+#     img_base_url = image_download_response["baseUrl"]
+#     img_quality = "data" # can be "data-saver"
+#     img_filename = image_download_response["chapter"][img_quality][0]
+
+#     IMG_URL  = img_base_url+"/" + img_quality+"/" + img_hash+"/" + img_filename
+#     resp = requests.get(IMG_URL)
+
+#     with open(img_filename, "wb") as f:
+#         f.write(resp.content)
+
+
+
+def downloading(downloading_response):
+    HOST_URL = downloading_response["baseUrl"]
+    CHAPTER_HASH = downloading_response["chapter"]["hash"]
+    data = downloading_response["chapter"]["data"]
+    # # data_saver = CHAPTER_JSON["chapter"]["dataSaver"]
+
+    folder_path = "Mangadex/"
+    os.makedirs(folder_path, exist_ok=True)
+
+    for page in data:
+        DOWNLOAD_URL = HOST_URL + "/data/" +  CHAPTER_HASH +  "/" + page
+        
+        R = requests.get(DOWNLOAD_URL)
+        
+        with open(folder_path+"/"+page , mode="wb") as f:
+            f.write(R.content)
+            
+    print(f"Downloaded {len(data)} pages.")
+
+
    
 def main():
     title = input("Enter manga name : ")
@@ -75,42 +110,11 @@ def main():
 
     CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
 
-    # """FOR DOWNLOADING"""
-    # # # r = requests.get(f"{base_url}/at-home/server/{chapter_id}")
-    # # # CHAPTERS = requests.get(CHAPTER_URL)
-    # # # CHAPTER_json = CHAPTERS.json()
-
-    # HOST_URL = CHAPTER_JSON["baseUrl"]
-    # CHAPTER_HASH = CHAPTER_JSON["chapter"]["hash"]
-    # data = CHAPTER_JSON["chapter"]["data"]
-    # # # data_saver = CHAPTER_JSON["chapter"]["dataSaver"]
-
-    # folder_path = "Mangadex/"+chapter_id
-    # os.makedirs(folder_path, exist_ok=True)
-
-    # for page in data:
-    #     DOWNLOAD_URL = HOST_URL + "/data/" +  CHAPTER_URL +  "/" + page
-        
-    #     R = requests.get(DOWNLOAD_URL)
-        
-    #     with open(folder_path+"/"+page , mode="wb") as f:
-    #         f.write(R.content)
-            
-    # print(f"Downloaded {len(data)} pages.")
+    # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
     
-    
-    
-    # """ For retrieving an IMAGE / DOWNLOADING single image"""
-    # img_hash = CHAPTER_ID["chapter"]["hash"]
-    # img_base_url = CHAPTER_ID["baseUrl"]
-    # img_quality = "data" # can be "data-saver"
-    # img_filename = CHAPTER_ID["chapter"][img_quality][0]
-
-    # IMG_URL  = img_base_url+"/" + img_quality+"/" + img_hash+"/" + img_filename
-    # resp = requests.get(IMG_URL)
-
-    # with open(img_filename, "wb") as f:
-    #     f.write(resp.content)
+    DOWNLOAD = downloading(CHAPTER_JSON)
+ 
+ 
 
 if __name__ == "__main__":
     main()
