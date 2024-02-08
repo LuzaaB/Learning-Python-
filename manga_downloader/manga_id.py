@@ -13,27 +13,6 @@ import argparse     ### argument parsing. FOR LATER>
 languages = ["en"]
 BASE_URL = "https://api.mangadex.org"
 SEARCH_MANGA_URL = BASE_URL + "/manga"
-
-
-
-def main():
-    title = input("Enter manga name : ")
-    r = requests.get(
-        SEARCH_MANGA_URL,
-        params={"title": title}
-    )
-    
-    CHAPTER_SEARCH_URL = get_chap_search_url(r)
-    print("Chapter Seacrh url : "+CHAPTER_SEARCH_URL)
-    
-    CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
-    print("Chapter ID"+CHAPTER_ID)
-
-    CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
-
-    # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
-    
-    DOWNLOAD = downloading(CHAPTER_JSON)
  
  
 
@@ -75,8 +54,8 @@ def get_chap_url_json(chap_url_json_response):
     print("ID of chapters list page : "+chapter_url)
     chapter_json = requests.get(chapter_url)
     parsed_chap_json = chapter_json.json()
-    text = json.dumps(parsed_chap_json, indent=4)
-    return text
+    # text = json.dumps(parsed_chap_json, indent=4)
+    return parsed_chap_json
  
  
 
@@ -117,5 +96,23 @@ def downloading(downloading_response):
 
 
 
+def main():
+    title = input("Enter manga name : ")
+    r = requests.get(
+        SEARCH_MANGA_URL,
+        params={"title": title}
+    )
+    
+    CHAPTER_SEARCH_URL = get_chap_search_url(r)
+    print("Chapter Search url : "+CHAPTER_SEARCH_URL)
+    
+    CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
+    print("Chapter ID : "+CHAPTER_ID)
+
+    CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
+
+    # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
+    
+    DOWNLOAD = downloading(CHAPTER_JSON)
 if __name__ == "__main__":
     main()
