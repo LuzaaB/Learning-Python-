@@ -16,6 +16,27 @@ SEARCH_MANGA_URL = BASE_URL + "/manga"
 
 
 
+def main():
+    title = input("Enter manga name : ")
+    r = requests.get(
+        SEARCH_MANGA_URL,
+        params={"title": title}
+    )
+    
+    CHAPTER_SEARCH_URL = get_chap_search_url(r)
+    print("Chapter Seacrh url : "+CHAPTER_SEARCH_URL)
+    
+    CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
+    print("Chapter ID"+CHAPTER_ID)
+
+    CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
+
+    # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
+    
+    DOWNLOAD = downloading(CHAPTER_JSON)
+ 
+ 
+
 ''' To access particular contents of the searched manga '''
 def get_chap_search_url(chap_search_url_response):
     results =  chap_search_url_response.json()["data"]
@@ -74,6 +95,7 @@ def get_chap_url_json(chap_url_json_response):
 
 
 
+''' Download the manga'''
 def downloading(downloading_response):
     HOST_URL = downloading_response["baseUrl"]
     CHAPTER_HASH = downloading_response["chapter"]["hash"]
@@ -94,27 +116,6 @@ def downloading(downloading_response):
     print(f"Downloaded {len(data)} pages.")
 
 
-   
-def main():
-    title = input("Enter manga name : ")
-    r = requests.get(
-        SEARCH_MANGA_URL,
-        params={"title": title}
-    )
-    
-    CHAPTER_SEARCH_URL = get_chap_search_url(r)
-    print("Chapter Seacrh url : "+CHAPTER_SEARCH_URL)
-    
-    CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
-    print("Chapter ID"+CHAPTER_ID)
-
-    CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
-
-    # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
-    
-    DOWNLOAD = downloading(CHAPTER_JSON)
- 
- 
 
 if __name__ == "__main__":
     main()
