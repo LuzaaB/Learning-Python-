@@ -20,9 +20,6 @@ languages = ["en"]
 BASE_URL = "https://api.mangadex.org"
 SEARCH_MANGA_URL = BASE_URL + "/manga"
 
-# print([manga["id"] for manga in r.json()["data"]])
-
-
 
 
 def get_chap_search_url(response):
@@ -32,10 +29,11 @@ def get_chap_search_url(response):
         return None
     
     first = results[0]
-    # first = "f65444dc-3694-4e31-a166-8afb2938ed55"
 
     ''' To access particular contents of the searched manga '''
     return SEARCH_MANGA_URL + "/" + first + "/feed"
+   
+   
    
 def main():
     title = input("Enter manga name : ")
@@ -44,7 +42,7 @@ def main():
         params={"title": title}
     )
     
-
+    ''' To access chapters '''
     CHAPTER_SEARCH_URL = get_chap_search_url(r)
     print(CHAPTER_SEARCH_URL)
     chpt_list = requests.get(CHAPTER_SEARCH_URL, params={"translatedLanguage[]":languages})
@@ -53,8 +51,6 @@ def main():
     # with open("chapterlist.json","w") as f: # to see the contents in english of chapterlist
     #     f.write(json.dumps(chapter_list, indent=4))
 
-
-    ''' To access chapters '''
     # for chap in chapter_list["data"] :
     #     chapter = chap["id"]  
     chapter_id = chapter_list["data"][0]["id"]
@@ -69,13 +65,11 @@ def main():
     #     chapterID.write(text)
         
 
-    """ For retrieving an IMAGE """
+    """ For retrieving an IMAGE / DOWNLOADING single image"""
     img_hash = chap_json["chapter"]["hash"]
     img_base_url = chap_json["baseUrl"]
     img_quality = "data" # can be "data-saver"
     img_filename = chap_json["chapter"][img_quality][0]
-
-
 
     IMG_URL  = img_base_url+"/" + img_quality+"/" + img_hash+"/" + img_filename
     resp = requests.get(IMG_URL)
