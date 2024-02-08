@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 
 import dataclasses
 import pathlib    ## proper directory structure, and check if already exists
@@ -7,16 +8,10 @@ import pathlib    ## proper directory structure, and check if already exists
 import sys          ## LATER, but before argpare
 import argparse     ### argument parsing. FOR LATER>
 
-import os
-
-# import  news_article as na
-
 ## os.path or pathlib  
+
 languages = ["en"]
 
-
-
-"""TO SEARCH FOR THE MANGA"""
 BASE_URL = "https://api.mangadex.org"
 SEARCH_MANGA_URL = BASE_URL + "/manga"
 
@@ -30,7 +25,7 @@ def get_chap_search_url(chap_search_url_response):
         return None
     
     first = results[0]["id"]
-    print(first)
+    print("ID of the first manga in the list : "+first)
     chap_search_url = f"{SEARCH_MANGA_URL}/{first}/feed"
     return chap_search_url
    
@@ -57,7 +52,7 @@ def get_chap_id(chap_id_response):
 ''' To get the JSON data present in the chapter '''
 def get_chap_url_json(chap_url_json_response):
     chapter_url = "https://api.mangadex.org/at-home/server/" + chap_url_json_response
-    print(chapter_url)
+    print("ID of chapters list page : "+chapter_url)
     chapter_json = requests.get(chapter_url)
     parsed_chap_json = chapter_json.json()
     text = json.dumps(parsed_chap_json, indent=4)
@@ -73,10 +68,10 @@ def main():
     )
     
     CHAPTER_SEARCH_URL = get_chap_search_url(r)
-    print(CHAPTER_SEARCH_URL)
+    print("Chapter Seacrh url : "+CHAPTER_SEARCH_URL)
     
     CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
-    print(CHAPTER_ID)
+    print("Chapter ID"+CHAPTER_ID)
 
     CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
 
@@ -90,11 +85,8 @@ def main():
     # data = CHAPTER_JSON["chapter"]["data"]
     # # # data_saver = CHAPTER_JSON["chapter"]["dataSaver"]
 
-
     # folder_path = "Mangadex/"+chapter_id
     # os.makedirs(folder_path, exist_ok=True)
-
-
 
     # for page in data:
     #     DOWNLOAD_URL = HOST_URL + "/data/" +  CHAPTER_URL +  "/" + page
@@ -119,7 +111,6 @@ def main():
 
     # with open(img_filename, "wb") as f:
     #     f.write(resp.content)
-
 
 if __name__ == "__main__":
     main()
