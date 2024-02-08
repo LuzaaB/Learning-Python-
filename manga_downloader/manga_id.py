@@ -30,6 +30,7 @@ def get_chap_search_url(chap_search_url_response):
         return None
     
     first = results[0]["id"]
+    print(first)
     chap_search_url = f"{SEARCH_MANGA_URL}/{first}/feed"
     return chap_search_url
    
