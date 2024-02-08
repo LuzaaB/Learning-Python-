@@ -35,8 +35,8 @@ def get_chap_id(chap_id_response):
     chpt_list = requests.get(chap_id_response, params={"translatedLanguage[]":languages})
     chapter_list = chpt_list.json()
     # print(json.dumps(chapter_list, indent=4))
-    # with open("chapterlist.json","w") as f: # to see the contents in english of chapterlist
-    #     f.write(json.dumps(chapter_list, indent=4))
+    with open("chapterlist.json","w") as f: # to see the contents in english of chapterlist
+        f.write(json.dumps(chapter_list, indent=4))
 
     # for chap in chapter_list["data"] :
     #     chapter = chap["id"]  
