@@ -3,8 +3,10 @@ import json
 import os
 
 import dataclasses
-import pathlib    ## proper directory structure, and check if already exists
+from pathlib import Path
 
+
+## sys.argv  
 import sys          ## LATER, but before argparse
 import argparse     ### argument parsing. FOR LATER>
 
@@ -12,9 +14,16 @@ import argparse     ### argument parsing. FOR LATER>
 
 languages = ["en"]
 BASE_URL = "https://api.mangadex.org"
-SEARCH_MANGA_URL = BASE_URL + "/manga"
- 
- 
+SEARCH_MANGA_URL = f"{BASE_URL}/manga"
+CHAPTER_URL = "https://api.mangadex.org/at-home/server/{chap_url_json_response}"
+PAGE_DL_URL = "{HOST_URL}/data/{CHAPTER_HASH}/{page}"
+
+
+
+### store entire data in dataclasses
+### make a printable representation
+
+
 
 ''' To access particular contents of the searched manga '''
 def get_chap_search_url(chap_search_url_response):
@@ -39,7 +48,7 @@ def get_chap_id(chap_id_response):
         f.write(json.dumps(chapter_list, indent=4))
 
     # for chap in chapter_list["data"] :
-    #     chapter = chap["id"]  
+    #     chapter = chap["id"]      
     chapter_id = chapter_list["data"][0]["id"]
     # print(chapter_id)
     return chapter_id
@@ -50,8 +59,9 @@ def get_chap_id(chap_id_response):
  
 ''' To get the JSON data present in the chapter '''
 def get_chap_url_json(chap_url_json_response):
-    chapter_url = "https://api.mangadex.org/at-home/server/" + chap_url_json_response
-    print("ID of chapters list page : "+chapter_url)
+    # chapter_url = f"https://api.mangadex.org/at-home/server/{chap_url_json_response}"s
+    chapter_url = CHAPTER_URL.format(chap_url_json_response=chap_url_json_response)
+    print(f"ID of chapters list page : {chapter_url}")
     chapter_json = requests.get(chapter_url)
     parsed_chap_json = chapter_json.json()
     # text = json.dumps(parsed_chap_json, indent=4)
@@ -75,21 +85,23 @@ def get_chap_url_json(chap_url_json_response):
 
 
 ''' Download the manga'''
-def downloading(downloading_response):
-    HOST_URL = downloading_response["baseUrl"]
-    CHAPTER_HASH = downloading_response["chapter"]["hash"]
-    data = downloading_response["chapter"]["data"]
+def download(download_response):
+    HOST_URL = download_response["baseUrl"]
+    CHAPTER_HASH = download_response["chapter"]["hash"]
+    data = download_response["chapter"]["data"]
     # # data_saver = CHAPTER_JSON["chapter"]["dataSaver"]
 
-    folder_path = "Mangadex/"
-    os.makedirs(folder_path, exist_ok=True)
+    folder_path = Path("Mangadex")
+    folder_path.makedirs()
+    
+    #os.makedirs(folder_path, exist_ok=True)
 
     for page in data:
-        DOWNLOAD_URL = HOST_URL + "/data/" +  CHAPTER_HASH +  "/" + page
-        
+        DOWNLOAD_URL = PAGE_DL_URL.format(HOST_URL=HOST_URL, CHAPTER_HASH=CHAPTER_HASH,page=page)  
         R = requests.get(DOWNLOAD_URL)
         
-        with open(folder_path+"/"+page , mode="wb") as f:
+        page_path = Path(folder_path) / page
+        with open(page_path , mode="wb") as f:
             f.write(R.content)
             
     print(f"Downloaded {len(data)} pages.")
@@ -104,15 +116,18 @@ def main():
     )
     
     CHAPTER_SEARCH_URL = get_chap_search_url(r)
-    print("Chapter Search url : "+CHAPTER_SEARCH_URL)
+    print(f"Chapter Search url : {CHAPTER_SEARCH_URL}")
     
     CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
-    print("Chapter ID : "+CHAPTER_ID)
+    print(f"Chapter ID : {CHAPTER_ID}")
 
     CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
 
     # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
     
-    DOWNLOAD = downloading(CHAPTER_JSON)
+    DOWNLOAD = download(CHAPTER_JSON)
+    
+    
+    
 if __name__ == "__main__":
     main()

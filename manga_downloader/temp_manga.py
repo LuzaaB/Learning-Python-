@@ -28,7 +28,7 @@ def get_chap_search_url(chap_search_url_response):
     chap_search_url = f"{SEARCH_MANGA_URL}/{first}/feed"
     return chap_search_url
    
-   
+order = "asc"
    
 ''' To get the chapter id of the ones in english'''
 def get_chap_id(chap_id_response):
