@@ -38,18 +38,36 @@ def get_chap_search_url(chap_search_url_response):
     return chap_search_url
    
    
+
+def get_chap_list(chap_list_response):
+    chpt_list = requests.get(chap_list_response, params={"translatedLanguage[]":languages})
+    chapter_list = chpt_list.json()
+    MANGA = json.dumps(chapter_list, indent = 4)
+    with open("chapterList.json","w") as f :
+        f.write(MANGA)
+    
+    # CHAPTER-WISE SORTING
+    list_len = len(MANGA["data"])
+    for i in range(1, list_len) :
+        for j in range(0, list_len-i-1) :
+            first_val = int(MANGA["data"][j]["attributes"]["chapter"])
+            second_val = int(MANGA["data"][j+1]["attributes"]["chapter"])
+            if first_val > second_val :
+                temp_val = first_val
+                MANGA["data"][j] = MANGA["data"][j+1]
+                MANGA["data"][j+1] = temp_val
+                # shortcut of the above -->
+                # MANGA["data"][j] , MANGA["data"][j+1] = MANGA["data"][j+1] , MANGA["data"][j]                
+                
+    return MANGA
+
+
    
 ''' To get the chapter id of the ones in english'''
 def get_chap_id(chap_id_response):
-    chpt_list = requests.get(chap_id_response, params={"translatedLanguage[]":languages})
-    chapter_list = chpt_list.json()
-    # print(json.dumps(chapter_list, indent=4))
-    with open("chapterlist.json","w") as f: # to see the contents in english of chapterlist
-        f.write(json.dumps(chapter_list, indent=4))
-
     # for chap in chapter_list["data"] :
     #     chapter = chap["id"]      
-    chapter_id = chapter_list["data"][0]["id"]
+    chapter_id = chap_id_response["data"][0]["id"]
     # print(chapter_id)
     return chapter_id
     # with open("chapter_id.json","w") as chapterID:
@@ -110,19 +128,18 @@ def download(download_response):
 
 def main():
     title = input("Enter manga name : ")
-    r = requests.get(
-        SEARCH_MANGA_URL,
-        params={"title": title}
-    )
+    r = requests.get(SEARCH_MANGA_URL , params = {"title" : title})
     
     CHAPTER_SEARCH_URL = get_chap_search_url(r)
     print(f"Chapter Search url : {CHAPTER_SEARCH_URL}")
     
-    CHAPTER_ID = get_chap_id(CHAPTER_SEARCH_URL)
+    CHAPTER_LIST = get_chap_list(CHAPTER_SEARCH_URL)
+    
+    CHAPTER_ID = get_chap_id(CHAPTER_LIST)
     print(f"Chapter ID : {CHAPTER_ID}")
 
     CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
-
+    
     # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
     
     DOWNLOAD = download(CHAPTER_JSON)
