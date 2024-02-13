@@ -23,8 +23,6 @@ PAGE_DL_URL = "{HOST_URL}/data/{CHAPTER_HASH}/{page}"
 ### store entire data in dataclasses
 ### make a printable representation
 
-
-
 ''' To access particular contents of the searched manga '''
 def get_chap_search_url(chap_search_url_response):
     results =  chap_search_url_response.json()["data"]
@@ -39,6 +37,7 @@ def get_chap_search_url(chap_search_url_response):
    
    
 
+''' To get the chapter list and sort it in ascending order '''
 def get_chap_list(chap_list_response):
     chpt_list = requests.get(chap_list_response, params={"translatedLanguage[]":languages})
     chapter_list = chpt_list.json()
@@ -64,41 +63,26 @@ def get_chap_list(chap_list_response):
 
    
 ''' To get the chapter id of the ones in english'''
-def get_chap_id(chap_id_response):
-    # for chap in chapter_list["data"] :
-    #     chapter = chap["id"]      
-    chapter_id = chap_id_response["data"][0]["id"]
-    # print(chapter_id)
-    return chapter_id
+def get_chap_id_list(chap_id_response): 
+    chap_id_list = []
+    for id in range(len(chap_id_response["data"])) :
+        chap_id_list.append(chap_id_response["data"][id]["id"])
+    return chap_id_list
     # with open("chapter_id.json","w") as chapterID:
     #     chapterID.write(text)
    
    
  
 ''' To get the JSON data present in the chapter '''
-def get_chap_url_json(chap_url_json_response):
-    # chapter_url = f"https://api.mangadex.org/at-home/server/{chap_url_json_response}"s
-    chapter_url = CHAPTER_URL.format(chap_url_json_response=chap_url_json_response)
-    print(f"ID of chapters list page : {chapter_url}")
-    chapter_json = requests.get(chapter_url)
-    parsed_chap_json = chapter_json.json()
-    # text = json.dumps(parsed_chap_json, indent=4)
-    return parsed_chap_json
- 
- 
-
-# """ For retrieving an IMAGE / DOWNLOADING single image"""
-# def download_one_page(image_download_response):
-#     img_hash = image_download_response["chapter"]["hash"]
-#     img_base_url = image_download_response["baseUrl"]
-#     img_quality = "data" # can be "data-saver"
-#     img_filename = image_download_response["chapter"][img_quality][0]
-
-#     IMG_URL  = img_base_url+"/" + img_quality+"/" + img_hash+"/" + img_filename
-#     resp = requests.get(IMG_URL)
-
-#     with open(img_filename, "wb") as f:
-#         f.write(resp.content)
+def get_chap_list_url_json(chap_url_json_response):
+    for id in range(len(chap_url_json_response)):
+        # chapter_url = f"https://api.mangadex.org/at-home/server/{chap_url_json_response}"s
+        chapter_url = CHAPTER_URL.format(chap_url_json_response=chap_url_json_response[id])
+        # print(f"ID of chapters list page : {chapter_url}")
+        # chapter_json = requests.get(chapter_url)
+        # parsed_chap_json = chapter_json.json()
+        # text = json.dumps(parsed_chap_json, indent=4)
+    return parsed_chap_json_list
 
 
 
@@ -135,10 +119,10 @@ def main():
     
     CHAPTER_LIST = get_chap_list(CHAPTER_SEARCH_URL)
     
-    CHAPTER_ID = get_chap_id(CHAPTER_LIST)
-    print(f"Chapter ID : {CHAPTER_ID}")
+    CHAP_ID_LIST = get_chap_id_list(CHAPTER_LIST)
+    print(f"Chapter ID : {CHAP_ID_LIST}")
 
-    CHAPTER_JSON = get_chap_url_json(CHAPTER_ID)
+    CHAPTER_JSON = get_chap_list_url_json(CHAP_ID_LIST)
     
     # DOWNLOAD_ONE_PAGE = download_one_page(CHAPTER_ID)
     
