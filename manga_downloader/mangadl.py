@@ -111,7 +111,7 @@ def download(download_response):
     # # data_saver = CHAPTER_JSON["chapter"]["dataSaver"]
 
     folder_path = Path("Mangadex")
-    folder_path.makedirs()
+    folder_path.makedir()
     
     #os.makedirs(folder_path, exist_ok=True)
 
@@ -130,7 +130,6 @@ def download(download_response):
 def main():
     title = input("Enter manga name : ")
     r = requests.get(SEARCH_MANGA_URL , params = {"title" : title})
-    
     CHAPTER_SEARCH_URL = get_chap_search_url(r)
     print(f"Chapter Search url : {CHAPTER_SEARCH_URL}")
     
