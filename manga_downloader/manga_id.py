@@ -75,12 +75,14 @@ def get_chap_id_list(chap_id_response):
  
 ''' To get the JSON data present in the chapter '''
 def get_chap_list_url_json(chap_url_json_response):
+    parsed_chap_json_list = []
     for id in range(len(chap_url_json_response)):
         # chapter_url = f"https://api.mangadex.org/at-home/server/{chap_url_json_response}"s
         chapter_url = CHAPTER_URL.format(chap_url_json_response=chap_url_json_response[id])
         # print(f"ID of chapters list page : {chapter_url}")
-        # chapter_json = requests.get(chapter_url)
-        # parsed_chap_json = chapter_json.json()
+        chapter_json = requests.get(chapter_url)
+        parsed_chap_json = chapter_json.json()
+        parsed_chap_json_list.append(parsed_chap_json)
         # text = json.dumps(parsed_chap_json, indent=4)
     return parsed_chap_json_list
 
