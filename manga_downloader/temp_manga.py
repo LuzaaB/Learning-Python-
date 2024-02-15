@@ -194,7 +194,7 @@ def main():
     
     # manga.setup_download_directory()
     
-    for each in manga.chapter_list[:2]:
+    for each in manga.chapter_list: #[:2]
         each.download_to_disk(manga)
         
     manga.dump_to_file()
