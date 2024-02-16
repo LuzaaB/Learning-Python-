@@ -83,7 +83,7 @@ class Chapter:
         
             extension = page[page.rindex('.')+1:] 
         # +1 is used to retrieve the character immediately after the last occurance of the given character
-            print(extension)
+            # print(extension)
             actual_filename = f"{idx+1}.{extension}"
             dl_resp = requests.get(dl_url)
             img_path = folder_path / actual_filename
@@ -181,7 +181,7 @@ def main():
     manga = get_first_result(r)
     manga.download_chapter_data()
     
-    for each in manga.chapter_list: #[:2]
+    for each in manga.chapter_list[:2]: #
         each.download_to_disk(manga)
         
     manga.dump_to_file()
