@@ -5,7 +5,6 @@ from typing import List
 import dataclasses
 from pathlib import Path
 
-
 ## sys.argv  
 import sys          ## LATER, but before argparse
 import argparse     ### argument parsing. FOR LATER>
@@ -43,7 +42,6 @@ class Chapter:
     dl_host_url: str = ""
     page_paths: List[str] =  dataclasses.field(default_factory=lambda: [])
     
-    
     def __repr__(self):
         return f"<Chapter {self.chap_no} {self.title}>"
     
@@ -59,12 +57,11 @@ class Chapter:
             else:
                 newStr += char
         
-        return    newStr     
+        return newStr     
 
     def download_to_disk(self, parent_manga):
         
         ### manage and check the appropriate paths (create if not created)
-        
         folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
         folder_path.mkdir(exist_ok=True, parents=True)
         
@@ -119,9 +116,7 @@ class Manga:
 
     def dump_to_file(self):
         with open(f"{self.sanitized_title}.json", "w") as f:
-            json.dump(self, f, cls=EnhancedJSONEncoder, indent=4)
-            
-            
+            json.dump(self, f, cls=EnhancedJSONEncoder, indent=4)   
         
     def _sort_chapters(self):
         list_len = len(self.chapter_list)
@@ -152,7 +147,6 @@ class Manga:
         chpt_list = requests.get(chap_list_url, params={"translatedLanguage[]":languages})
         CHAPTER_LIST = chpt_list.json()
     
-       
         for each in CHAPTER_LIST["data"]:
             chap_id = each["id"]
             chap_title = each["attributes"]["title"]
@@ -162,10 +156,6 @@ class Manga:
             
             chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages, )
             self.chapter_list.append(chapter)
-        # c = Chapter("asfasfas", "The hero returns", 1, 2, 10)
-        # print(c)
-        # self.chapter_list.append(c)
-
 
         self._sort_chapters()
 
@@ -190,16 +180,11 @@ def main():
     
     manga = get_first_result(r)
     manga.download_chapter_data()
-    #manga.dump_to_file()
-    
-    # manga.setup_download_directory()
     
     for each in manga.chapter_list: #[:2]
         each.download_to_disk(manga)
         
     manga.dump_to_file()
-    
-    # ### TODO: make an initial structure
     
 if __name__ == "__main__":
     main()
