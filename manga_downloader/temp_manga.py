@@ -87,7 +87,8 @@ class Chapter:
             actual_filename = f"{idx+1}.{extension}"
             dl_resp = requests.get(dl_url)
             img_path = folder_path / actual_filename
-
+            # print("Printing : ",dl_resp.content)
+            # print("Printing JSON : ", dl_resp)
             with img_path.open(mode="wb") as f:
                 f.write(dl_resp.content)
 
