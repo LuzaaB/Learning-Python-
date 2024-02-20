@@ -42,11 +42,14 @@ class Chapter:
     dl_host_url: str = ""
     page_paths: List[str] =  dataclasses.field(default_factory=lambda: [])
     
+    
     def __repr__(self):
         return f"<Chapter {self.chap_no} {self.title}>"
     
+    
     def __str__(self):
         return self.__repr__()
+    
     
     @property
     def sanitized_title(self):    
@@ -58,6 +61,7 @@ class Chapter:
                 newStr += char
         
         return newStr     
+
 
     def download_to_disk(self, parent_manga):
         
@@ -99,6 +103,7 @@ class Manga:
     id: str
     title: str
     chapter_list: List[Chapter] = dataclasses.field(default_factory=lambda: [])
+    volume_list: List[Chapter] = dataclasses.field(default_factory=lambda: [])
     
     @property
     def sanitized_title(self):    
@@ -112,12 +117,15 @@ class Manga:
         return    newStr     
         #return self.title.replace(" ", "_").replace(":", )
         
+        
     def __repr__(self):
         return f"<Manga {self.title}>"
+
 
     def dump_to_file(self):
         with open(f"{self.sanitized_title}.json", "w") as f:
             json.dump(self, f, cls=EnhancedJSONEncoder, indent=4)   
+        
         
     def _sort_chapters(self):
         list_len = len(self.chapter_list)
@@ -136,7 +144,8 @@ class Manga:
                     self.chapter_list[j] = self.chapter_list[j+1]
                     self.chapter_list[j+1] = temp
         
-        print(self.chapter_list)
+        # print(self.chapter_list)
+    
     
     #  chapList.json ko data use garera
     def download_chapter_data(self):
@@ -155,7 +164,7 @@ class Manga:
             vol_num = int(each["attributes"]["volume"])
             num_pages = int(each["attributes"]["pages"])
             
-            chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages, )
+            chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages)
             self.chapter_list.append(chapter)
 
         self._sort_chapters()
