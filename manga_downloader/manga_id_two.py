@@ -44,7 +44,7 @@ class Chapter:
     
     
     def __repr__(self):
-        return f"<Chapter:{self.chap_no} {self.title}>"
+        return f"<Chapter {self.chap_no} {self.title}>"
     
     
     def __str__(self):
@@ -103,7 +103,6 @@ class Manga:
     id: str
     title: str
     chapter_list: List[Chapter] = dataclasses.field(default_factory=lambda: [])
-    volume_list : []
     
     @property
     def sanitized_title(self):    
@@ -143,17 +142,8 @@ class Manga:
                     temp = first_data
                     self.chapter_list[j] = self.chapter_list[j+1]
                     self.chapter_list[j+1] = temp
-
-        # print(self.chapter_list)
-    
-    
-    # def _sort_volume(self):
-    #     index = 1
-    #     data = []
-        
-    #     for chapter_data in self.chapter_list:
-    #         if     
             
+        # print(self.chapter_list)
     
     
     #  chapList.json ko data use garera

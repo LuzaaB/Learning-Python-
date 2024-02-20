@@ -1,27 +1,27 @@
 
 dummydata =  [
     {
-        "value": 1,
-        "volume": 1,
-    },
-    {
-        "value": 2,
-        "volume": 1,  
-    },
-    {
-        "value": 3,
-        "volume": 1,
-    },
-    {
         "value": 4,
         "volume": 1,
     },
     {
-        "value": 5,
-        "volume": 2,
+        "value": 3,
+        "volume": 1,  
+    },
+    {
+        "value": 2,
+        "volume": 1,
+    },
+    {
+        "value": 1,
+        "volume": 1,
     },
     {
         "value": 6,
+        "volume": 2,
+    },
+    {
+        "value": 5,
         "volume": 2,
     },
     {
@@ -60,6 +60,14 @@ index = 1
 ### Split into groups on volume boundary
 # Assumption: dummy data already sorted by chapter and volume. Only have to split
 data = []
+
+for i in range(1, len(dummydata)) :
+    for j in range(0, len(dummydata)-1-i):
+        if dummydata[j]["value"] > dummydata[j+1]["value"] :
+            temp = dummydata[j]
+            dummydata[j] = dummydata[j+1]
+            dummydata[j+1] = temp
+
 
 for chapter_data in dummydata:
     

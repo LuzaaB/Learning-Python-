@@ -33,21 +33,9 @@
             "chap_no": 2,
             "vol_no": 1,
             "num_pages": 11,
-            "dl_hash": "8b53b281393534f715cd29c5d894cf3a",
-            "dl_host_url": "https://uploads.mangadex.org",
-            "page_paths": [
-                "1-a735875513c48655d475930edb26f675eaa69fd04b0e1d7b001743d97d07e40c.jpg",
-                "2-2b573d51cd37ab516815f34bbb2244c5cd75082b9692d8cb70c45e012f55da95.jpg",
-                "3-3b1c3bab76da957be01a6747efc36b2160c0bd2cb2a1a5aa964f2115e335a425.jpg",
-                "4-d67ba304d63aab8847e8e17acfd15f0778fc66ad338add164f8edb9950fac8dc.jpg",
-                "5-69487af32ac5cfe30b713f2858821bd61e9f6d74d3964dd05f5044742eaac037.jpg",
-                "6-ab0d7aad8d7e89340c5dfa49b9b559af682dfe581166acc4492f501a928be357.jpg",
-                "7-c5f7f86a934185f488d18b2b70518427caf19778907140f1ed525023afc2e945.jpg",
-                "8-406aff6d4dbe4d822bc9896b4590910fc92e9d60d37a124f63e781c264098f34.jpg",
-                "9-fd5b7dd4d6556fe2a97871c0ad82cb2d32470207467fdb916649730d40bcf14f.jpg",
-                "10-d89164b1a16c4b1ea301fdd3523f970f07074637bed0d93601c535a2633ecabe.jpg",
-                "11-e81e996f283959e7f6831bcb6791cc62e97d6085846082e3cbdcf0b0d27246a2.jpg"
-            ]
+            "dl_hash": "",
+            "dl_host_url": "",
+            "page_paths": []
         },
         {
             "id": "70319332-6357-4dad-829e-91821a655cab",
