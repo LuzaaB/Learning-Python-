@@ -1,6 +1,7 @@
 import requests
 import json
 from typing import List, Dict
+from PIL import Image
 
 import dataclasses
 from pathlib import Path
@@ -10,6 +11,7 @@ import sys          ## LATER, but before argparse
 import argparse     ### argument parsing. FOR LATER>
 
 ## os.path or pathlib  
+LAST_UNIQUE_CHAP_ID = 9999.0
 
 languages = ["en"]
 BASE_URL = "https://api.mangadex.org"
@@ -33,16 +35,17 @@ class Chapter:
     ## meaningful attribs
     id: str
     title: str 
-    chap_no: int
-    vol_no: int
+    chap_no: float | None
+    vol_no: float | None
     num_pages: int
     
     ### download data    
     dl_hash: str = ""
     dl_host_url: str = ""
     page_paths: List[str] =  dataclasses.field(default_factory=lambda: [])
+    page_images: List[Image.Image] =  dataclasses.field(default_factory=lambda: [])
     
-    
+
     def __repr__(self):
         return f"<Chapter:{self.chap_no} {self.title}>"
     
@@ -63,38 +66,40 @@ class Chapter:
         return newStr     
 
 
-    # def download_to_disk(self, parent_manga):
+    def download_image_content(self, parent_manga):
         
-    #     ### manage and check the appropriate paths (create if not created)
-    #     folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
-    #     folder_path.mkdir(exist_ok=True, parents=True)
+        ### manage and check the appropriate paths (create if not created)
+        folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
+        folder_path.mkdir(exist_ok=True, parents=True)
         
-    #     ### fill dl data
-    #     # chap_id_url = f"https://api.mangadex.org/at-home/server/{self.id}"
-    #     chap_id_url = CHAP_ID_URL.format(chapter_id=self.id)
-    #     resp = requests.get(chap_id_url)
-    #     print(resp.text, resp.status_code)
-    #     parsed_resp = resp.json()
-    #     self.dl_hash = parsed_resp["chapter"]["hash"]
-    #     self.dl_host_url = parsed_resp["baseUrl"]      
+        ### fill dl data
+        # chap_id_url = f"https://api.mangadex.org/at-home/server/{self.id}"
+        chap_id_url = CHAP_ID_URL.format(chapter_id=self.id)
+        resp = requests.get(chap_id_url)
+        print(resp.text, resp.status_code)
+        parsed_resp = resp.json()
+        self.dl_hash = parsed_resp["chapter"]["hash"]
+        self.dl_host_url = parsed_resp["baseUrl"]      
         
-    #     for img in parsed_resp["chapter"]["data"]:
-    #         self.page_paths.append(img)
+        for img in parsed_resp["chapter"]["data"]:
+            self.page_paths.append(img)
         
-       ### actual download
+       ## actual download
         # for idx, page in enumerate(self.page_paths):
-        #     dl_url = PAGE_DL_URL.format(HOST_URL=self.dl_host_url, CHAP_HASH=self.dl_hash, PAGE=page)
+        for page in self.page_paths:
+            dl_url = PAGE_DL_URL.format(HOST_URL=self.dl_host_url, CHAP_HASH=self.dl_hash, PAGE=page)
         
-        #     extension = page[page.rindex('.')+1:] 
-        # # +1 is used to retrieve the character immediately after the last occurance of the given character
-        #     # print(extension)
-        #     actual_filename = f"{idx+1}.{extension}"
-        #     dl_resp = requests.get(dl_url)
-        #     img_path = folder_path / actual_filename
-        #     # print("Printing : ",dl_resp.content)
-        #     # print("Printing JSON : ", dl_resp)
-        #     with img_path.open(mode="wb") as f:
-        #         f.write(dl_resp.content)
+            # extension = page[page.rindex('.')+1:] 
+        # +1 is used to retrieve the character immediately after the last occurance of the given character
+            ##    print(extension)
+            # actual_filename = f"{idx+1}.{extension}"
+            dl_resp = requests.get(dl_url)
+            # img_path = folder_path / actual_filename
+            ##    print("Printing : ",dl_resp.content)
+            ##    print("Printing JSON : ", dl_resp)
+            # with img_path.open(mode="wb") as f:
+            #     f.write(dl_resp.content)
+            self.page_images.append(dl_resp.content)
 
 
 
@@ -103,7 +108,7 @@ class Manga:
     id: str
     title: str
     chapter_list: List[Chapter] = dataclasses.field(default_factory=lambda: [])
-    volume_dict : Dict[int, List[Chapter]] = dataclasses.field(default_factory=lambda: {})
+    volume_dict : Dict[float|None, List[Chapter]] = dataclasses.field(default_factory=lambda: {})
     
     @property
     def sanitized_title(self):    
@@ -115,7 +120,7 @@ class Manga:
                 newStr += char
         
         return    newStr     
-        #return self.title.replace(" ", "_").replace(":", )
+        ##    return self.title.replace(" ", "_").replace(":", )
         
         
     def __repr__(self):
@@ -133,35 +138,31 @@ class Manga:
             for j in range(0, list_len-i):
                 first_data = self.chapter_list[j]
                 second_data = self.chapter_list[j+1]
-                # print(f'i = {i} \n comparing {first_data} and {second_data}')
+                ##   print(f'i = {i} \n comparing {first_data} and {second_data}')
                 
                 ### each time you print, make it so that the j-th and j+1-st chapters 
                 ## have some kind of marks that identify them
                 
-                # print(f"STATE: i = {i} j = {j} \n", " | ".join([str(c) for c in self.chapter_list]))
-                # swapping
+                ##   print(f"STATE: i = {i} j = {j} \n", " | ".join([str(c) for c in self.chapter_list]))
                 
+                # swapping
                 if first_data.chap_no > second_data.chap_no:
                     temp = first_data
                     self.chapter_list[j] = self.chapter_list[j+1]
                     self.chapter_list[j+1] = temp
-        # print(self.chapter_list)
+        ##   print(self.chapter_list)
 
 
     # def _sort_volume_old(self):
     #     list_len = len(self.chapter_list)
-        
     #     # GET A LIST OF ALL VOLUME NUMBERS (USING LIST COMPREHENSION)            
     #     volume_no_set = {each.vol_no  for each in self.chapter_list}
-        
     #     ## make arrangements for the main loop (2nd loop) - initial condition   
     #     for each in volume_no_set:
     #         self.volume_dict[each] = []
-        
     #     for each in self.chapter_list:
     #         self.volume_dict[each.vol_no].append(each)
-        
-    #     print(self.volume_dict)
+    ##    print(self.volume_dict)
     
     
     def _sort_volume(self):
@@ -203,20 +204,33 @@ class Manga:
         chapters from the feed (this does not include the chapter's hash and 
         page filenames or page lists) """        
         
-        chap_list_url =   f"{SEARCH_MANGA_URL}/{self.id}/feed"
+        chap_list_url = f"{SEARCH_MANGA_URL}/{self.id}/feed"
         chpt_list = requests.get(chap_list_url, params={"translatedLanguage[]":languages})
         CHAPTER_LIST = chpt_list.json()
-    
+
+        global LAST_UNIQUE_CHAP_ID
+        
         for each in CHAPTER_LIST["data"]:
             chap_id = each["id"]
             chap_title = each["attributes"]["title"]
-            chap_num = int(each["attributes"]["chapter"])
-            vol_num = int(each["attributes"]["volume"])
+            chap_num = each["attributes"]["chapter"]
+            if chap_num is None or chap_num == "":
+                chap_num = LAST_UNIQUE_CHAP_ID
+                LAST_UNIQUE_CHAP_ID += 1.0
+            else:
+                chap_num = float(each["attributes"]["chapter"])
+            
+            vol = each["attributes"]["volume"]
+            if vol is None or  vol == "" :
+                vol_num = 9999.0
+            else:
+                vol_num = float(each["attributes"]["volume"])
+            
             num_pages = int(each["attributes"]["pages"])
             
             chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages)
             self.chapter_list.append(chapter)
-        # print(f'chapter list {self.chapter_list}')
+        ##     print(f'chapter list {self.chapter_list}')
         self._sort_chapters()
 
 
@@ -236,6 +250,7 @@ def get_first_result(chap_search_url_response):
 def make_vol_pdf(vol_index, chap_list):
     pass
 
+
 def main():
     title = input("Enter manga name : ")
     r = requests.get(SEARCH_MANGA_URL , params = {"title" : title})
@@ -243,12 +258,11 @@ def main():
     manga = get_first_result(r)
     manga.download_chapter_data()
     manga._sort_volume()
-    # print(manga._sort_volume)
     print(manga.get_pretty_vol_dump_str())
     
     # for each in manga.chapter_list[:1]: #
-    #     each.download_to_disk(manga)
-        
+    #     each.download_image_content(manga)
+    
     # manga.dump_to_file()
     
 if __name__ == "__main__":
@@ -257,4 +271,4 @@ if __name__ == "__main__":
 
 # 1. Directory structure
 # 2. from resp.content
-#   grouping into volumes
+#    grouping into volumes
