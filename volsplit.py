@@ -91,14 +91,15 @@
 # print(list_len)
 # print(range(list_len))
 
+""" REARRANGING THE LIST DATA INTO A STRING (PRETTIFY) """
 data = { 
-        1: ["chap1", "chap2", "chap3"],
-        2: ["chap4", "chap5", "chap6"],
-        3: ["chap7", "chap8", "chap9"],
-        4: ["chap10", "chap11", "chap12"],
-        5: ["chap13", "chap14", "chap15"],
-        6: ["chap16", "chap17", "chap18"],
-        7: ["chap19", "chap20", "chap21"],
+        1: ["chap 1", "chap 2", "chap 3"],
+        2: ["chap 4", "chap 5", "chap 6"],
+        3: ["chap 7", "chap 8", "chap 9"],
+        4: ["chap 10", "chap 11", "chap 12"],
+        5: ["chap 13", "chap 14", "chap 15"],
+        6: ["chap 16", "chap 17", "chap 18"],
+        7: ["chap 19", "chap 20", "chap 21"],
         }
 
 final_data = ""
@@ -107,8 +108,9 @@ for key, value in data.items():
     print("VALUE : ", value)
 
     final_data += "Volume " + str(key) + " : " + "\n"
-    len = len(value)
-    for i in range(len):
-        final_data += value[i] + "\n"
+    list_len = len(value)
+    for i in range(list_len):
+        val = value[i].rjust(10 , ' ')
+        final_data += val + "\n"
 
-print(f"FINAL VALUE AFTER ARRANGING : {final_data}")
+print(f"FINAL VALUE AFTER ARRANGING : \n {final_data}")

@@ -130,20 +130,22 @@ class Manga:
     def _sort_chapters(self):
         list_len = len(self.chapter_list)
         for i in range(1, list_len):
-            for j in range(0, list_len-i-1):
+            for j in range(0, list_len-i):
                 first_data = self.chapter_list[j]
                 second_data = self.chapter_list[j+1]
+                # print(f'i = {i} \n comparing {first_data} and {second_data}')
                 
                 ### each time you print, make it so that the j-th and j+1-st chapters 
                 ## have some kind of marks that identify them
                 
-                #print(f"STATE: i = {i} j = {j} ", " | ".join([str(c) for c in self.chapter_list]))
+                # print(f"STATE: i = {i} j = {j} \n", " | ".join([str(c) for c in self.chapter_list]))
+                # swapping
                 
                 if first_data.chap_no > second_data.chap_no:
                     temp = first_data
                     self.chapter_list[j] = self.chapter_list[j+1]
                     self.chapter_list[j+1] = temp
-            # print(self.chapter_list)
+        # print(self.chapter_list)
 
 
     # def _sort_volume_old(self):
@@ -168,7 +170,8 @@ class Manga:
                 self.volume_dict[each.vol_no].append(each)
             else:
                 self.volume_dict[each.vol_no] = []
-                
+                self.volume_dict[each.vol_no].append(each)
+        print("HELLO :      ",self.volume_dict)
         
     def get_pretty_vol_dump_str(self):
         """
@@ -179,25 +182,20 @@ class Manga:
         Vol 2:
             Chapter 3
         """
-        
         # early exit
         if len(self.volume_dict.keys()) == 0:
             return "<Empty>"
         
-        return_stri = ""          
-        chap_string = ""
-        for val in self.volume_dict:
-            return_stri = "Vol : " + val.key() + "\n"
-    
+        return_stri = ""  
+        for key,value in self.volume_dict.items():    
+            return_stri += "Volume " + str(key) + " : \n"
+            list_len = len(value)
+            for j in range(list_len) : 
+                val = str(value[j])
+                return_stri += "\t" + val + "\n"  
         
         return return_stri
-            ### [(1,2,3), (4,5,6,7)]               
-            
-    #     data = []
-    #     for chapter_data in self.chapter_list:
-    #         if chapter_data
-            
-    
+                
     
     #  chapList.json ko data use garera
     def download_chapter_data(self):
@@ -218,7 +216,7 @@ class Manga:
             
             chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages)
             self.chapter_list.append(chapter)
-
+        # print(f'chapter list {self.chapter_list}')
         self._sort_chapters()
 
 
@@ -245,12 +243,10 @@ def main():
     manga = get_first_result(r)
     manga.download_chapter_data()
     manga._sort_volume()
+    # print(manga._sort_volume)
     print(manga.get_pretty_vol_dump_str())
     
-    
-
     # for each in manga.chapter_list[:1]: #
-        
     #     each.download_to_disk(manga)
         
     # manga.dump_to_file()
