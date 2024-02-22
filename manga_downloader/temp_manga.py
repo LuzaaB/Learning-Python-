@@ -1,6 +1,6 @@
 import requests
 import json
-from typing import List
+from typing import List, Dict
 
 import dataclasses
 from pathlib import Path
@@ -63,38 +63,38 @@ class Chapter:
         return newStr     
 
 
-    def download_to_disk(self, parent_manga):
+    # def download_to_disk(self, parent_manga):
         
-        ### manage and check the appropriate paths (create if not created)
-        folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
-        folder_path.mkdir(exist_ok=True, parents=True)
+    #     ### manage and check the appropriate paths (create if not created)
+    #     folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
+    #     folder_path.mkdir(exist_ok=True, parents=True)
         
-        ### fill dl data
-        # chap_id_url = f"https://api.mangadex.org/at-home/server/{self.id}"
-        chap_id_url = CHAP_ID_URL.format(chapter_id=self.id)
-        resp = requests.get(chap_id_url)
-        print(resp.text, resp.status_code)
-        parsed_resp = resp.json()
-        self.dl_hash = parsed_resp["chapter"]["hash"]
-        self.dl_host_url = parsed_resp["baseUrl"]      
+    #     ### fill dl data
+    #     # chap_id_url = f"https://api.mangadex.org/at-home/server/{self.id}"
+    #     chap_id_url = CHAP_ID_URL.format(chapter_id=self.id)
+    #     resp = requests.get(chap_id_url)
+    #     print(resp.text, resp.status_code)
+    #     parsed_resp = resp.json()
+    #     self.dl_hash = parsed_resp["chapter"]["hash"]
+    #     self.dl_host_url = parsed_resp["baseUrl"]      
         
-        for img in parsed_resp["chapter"]["data"]:
-            self.page_paths.append(img)
+    #     for img in parsed_resp["chapter"]["data"]:
+    #         self.page_paths.append(img)
         
        ### actual download
-        for idx, page in enumerate(self.page_paths):
-            dl_url = PAGE_DL_URL.format(HOST_URL=self.dl_host_url, CHAP_HASH=self.dl_hash, PAGE=page)
+        # for idx, page in enumerate(self.page_paths):
+        #     dl_url = PAGE_DL_URL.format(HOST_URL=self.dl_host_url, CHAP_HASH=self.dl_hash, PAGE=page)
         
-            extension = page[page.rindex('.')+1:] 
-        # +1 is used to retrieve the character immediately after the last occurance of the given character
-            # print(extension)
-            actual_filename = f"{idx+1}.{extension}"
-            dl_resp = requests.get(dl_url)
-            img_path = folder_path / actual_filename
-            # print("Printing : ",dl_resp.content)
-            # print("Printing JSON : ", dl_resp)
-            with img_path.open(mode="wb") as f:
-                f.write(dl_resp.content)
+        #     extension = page[page.rindex('.')+1:] 
+        # # +1 is used to retrieve the character immediately after the last occurance of the given character
+        #     # print(extension)
+        #     actual_filename = f"{idx+1}.{extension}"
+        #     dl_resp = requests.get(dl_url)
+        #     img_path = folder_path / actual_filename
+        #     # print("Printing : ",dl_resp.content)
+        #     # print("Printing JSON : ", dl_resp)
+        #     with img_path.open(mode="wb") as f:
+        #         f.write(dl_resp.content)
 
 
 
@@ -103,7 +103,7 @@ class Manga:
     id: str
     title: str
     chapter_list: List[Chapter] = dataclasses.field(default_factory=lambda: [])
-    volume_list : []
+    volume_dict : Dict[int, List[Chapter]] = dataclasses.field(default_factory=lambda: {})
     
     @property
     def sanitized_title(self):    
@@ -143,16 +143,59 @@ class Manga:
                     temp = first_data
                     self.chapter_list[j] = self.chapter_list[j+1]
                     self.chapter_list[j+1] = temp
+            # print(self.chapter_list)
 
-        # print(self.chapter_list)
-    
-    
-    # def _sort_volume(self):
-    #     index = 1
-    #     data = []
+
+    # def _sort_volume_old(self):
+    #     list_len = len(self.chapter_list)
         
+    #     # GET A LIST OF ALL VOLUME NUMBERS (USING LIST COMPREHENSION)            
+    #     volume_no_set = {each.vol_no  for each in self.chapter_list}
+        
+    #     ## make arrangements for the main loop (2nd loop) - initial condition   
+    #     for each in volume_no_set:
+    #         self.volume_dict[each] = []
+        
+    #     for each in self.chapter_list:
+    #         self.volume_dict[each.vol_no].append(each)
+        
+    #     print(self.volume_dict)
+    
+    
+    def _sort_volume(self):
+        for each in self.chapter_list:
+            if each.vol_no in self.volume_dict:
+                self.volume_dict[each.vol_no].append(each)
+            else:
+                self.volume_dict[each.vol_no] = []
+                
+        
+    def get_pretty_vol_dump_str(self):
+        """
+        Expected output format:
+        Vol 1:
+            Chapter 1: Dancing in the rain
+            Chapter 2
+        Vol 2:
+            Chapter 3
+        """
+        
+        # early exit
+        if len(self.volume_dict.keys()) == 0:
+            return "<Empty>"
+        
+        return_stri = ""          
+        chap_string = ""
+        for val in self.volume_dict:
+            return_stri = "Vol : " + val.key() + "\n"
+    
+        
+        return return_stri
+            ### [(1,2,3), (4,5,6,7)]               
+            
+    #     data = []
     #     for chapter_data in self.chapter_list:
-    #         if     
+    #         if chapter_data
             
     
     
@@ -192,6 +235,8 @@ def get_first_result(chap_search_url_response):
     return Manga(first_id, first_title)
 
 
+def make_vol_pdf(vol_index, chap_list):
+    pass
 
 def main():
     title = input("Enter manga name : ")
@@ -199,11 +244,21 @@ def main():
     
     manga = get_first_result(r)
     manga.download_chapter_data()
+    manga._sort_volume()
+    print(manga.get_pretty_vol_dump_str())
     
-    for each in manga.chapter_list[:1]: #
-        each.download_to_disk(manga)
+    
+
+    # for each in manga.chapter_list[:1]: #
         
-    manga.dump_to_file()
+    #     each.download_to_disk(manga)
+        
+    # manga.dump_to_file()
     
 if __name__ == "__main__":
-    main()
+    main() 
+    
+
+# 1. Directory structure
+# 2. from resp.content
+#   grouping into volumes
