@@ -246,9 +246,6 @@ def get_first_result(chap_search_url_response):
     return Manga(first_id, first_title)
 
 
-def make_vol_pdf(vol_index, chap_list):
-    pass
-
 
 def main():
     title = input("Enter manga name : ")
