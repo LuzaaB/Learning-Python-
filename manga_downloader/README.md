@@ -13,4 +13,4 @@ This folder contains programs used to download manga via Mangadex.
 - temporary.py: volume sorting
 - After_the_Rain.json: example of all the useful data extracted from the data sent by the website  
   (contains everything needed for downloading)
-- After the Rain.json: same as above but doesn't contain chapter pages data
+- After the Rain.json: same as above but doesn't contain chapter pages (images) data
