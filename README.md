@@ -1,4 +1,3 @@
 # Learning Python - Sarbham
-Learning python basics
 
-
+This repository contains all the python programs/projects done till date.
