@@ -1,14 +1,15 @@
 import requests
 import json
-import io
 import dataclasses
 import img2pdf
 
 from typing import List, Dict
 from pathlib import Path
 from tqdm import tqdm
+from time import sleep
 
 ## sys.argv  
+import io
 import sys          ## LATER, but before argparse
 import argparse     ### argument parsing. FOR LATER>
 ## os.path or pathlib  
@@ -59,7 +60,7 @@ class Chapter:
     def sanitized_title(self):    
         newStr = ""
         for char in self.title:
-            if char in ":/\'\"":
+            if char in ":/\'\" ":
                 newStr += "_"
             else:
                 newStr += char
@@ -67,13 +68,9 @@ class Chapter:
         return newStr     
 
 
-    def download_image_content(self, parent_manga):
+    def download_image_content(self):
         
         img_array = []
-        
-        ### manage and check the appropriate paths (create if not created)
-        folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
-        folder_path.mkdir(exist_ok=True, parents=True)
         
         ### fill dl data
         # chap_id_url = f"https://api.mangadex.org/at-home/server/{self.id}"
@@ -88,7 +85,7 @@ class Chapter:
             self.page_paths.append(img)
         
         ### actual download
-        for page in self.page_paths:
+        for page in tqdm(self.page_paths):
             dl_url = PAGE_DL_URL.format(HOST_URL=self.dl_host_url, CHAP_HASH=self.dl_hash, PAGE=page)
             dl_resp = requests.get(dl_url)
             img_array.append(dl_resp.content)           
@@ -134,17 +131,11 @@ class Manga:
                 first_data = self.chapter_list[j]
                 second_data = self.chapter_list[j+1]
                 
-                ### each time you print, make it so that the j-th and j+1-st chapters 
-                ### have some kind of marks that identify them
-                ##   print(f'i = {i} \n comparing {first_data} and {second_data}')
-                ##   print(f"STATE: i = {i} j = {j} \n", " | ".join([str(c) for c in self.chapter_list]))
-                
                 # swapping
                 if first_data.chap_no > second_data.chap_no:
                     temp = first_data
                     self.chapter_list[j] = self.chapter_list[j+1]
                     self.chapter_list[j+1] = temp
-        ##   print(self.chapter_list)
 
     
     def _sort_volume(self):
@@ -154,7 +145,7 @@ class Manga:
             else:
                 self.volume_dict[each.vol_no] = []
                 self.volume_dict[each.vol_no].append(each)
-        # print("HELLO : ",self.volume_dict)
+     
         
     def get_pretty_vol_dump_str(self):
         """
@@ -221,23 +212,31 @@ class Manga:
     
         for volume, chapters in self.volume_dict.items():
             ###### per volume task   ###
-            img_content_list = []
-            
-            for chap in chapters:
-                print(f"\nDownloading chapter {chap}")
-                page_images = chap.download_image_content(self)
-                img_content_list.extend(page_images)
-            
-            ## os.path.join(A, B) => A/B
-            ### Path(A) / B
             root_dir = Path(f"{self.sanitized_title}")  
             root_dir.mkdir(exist_ok=True)
             
-            pdf_path = root_dir / f"Volume {volume}.pdf"
+            pdf_path = root_dir/f"Volume_{volume}.pdf"
+            # full_path = "E:\Python\Learning-Python\manga_downloader\"+pdf_path
+            full_path = Path('E:')/'Python'/'Learning-Python'/'manga_downloader'/pdf_path
             
+            img_content_list = []
+            
+            print(pdf_path)
+            
+            if Path(pdf_path).exists():
+                print(Path(full_path).exists())
+                print(f'Volume {volume} already exists.\n')
+                continue
+                
+            for chap in chapters:                
+                print(f"\nDownloading chapter {chap}")
+                page_images = chap.download_image_content()
+                img_content_list.extend(page_images)
+                
             with open(pdf_path, "wb") as f:
                 f.write(img2pdf.convert(img_content_list))
             
+
 
 def get_first_result(chap_search_url_response):
     results =  chap_search_url_response.json()["data"]
@@ -269,7 +268,7 @@ def main():
     print(manga.get_pretty_vol_dump_str())
     
     # manga.volume_dict[1.0] = (manga.volume_dict[1.0])[:1]
-    manga.download_and_make_vol_pdf()
+    manga.download_and_make_vol_pdf()[:1]
 
     
 if __name__ == "__main__":

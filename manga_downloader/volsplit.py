@@ -112,7 +112,29 @@
 # print(json.dumps(CHAPTER_LIST, indent=4))
 
 
-from tqdm import tqdm
+# from tqdm import tqdm
+# from time import sleep
 
-for i in tqdm(range(999999999)):
-    pass
+# pbar = tqdm(total=100)
+# for i in range (100):
+#     sleep(0.1)
+#     pbar.update(1)
+    
+# pbar = tqdm(["a", "b", "c", "d"]) 
+# for char in pbar:
+#     sleep(0.25)
+#     pbar.set_description("Processing %s" % char)
+
+# from tqdm import tqdm
+# from time import sleep
+# for i in tqdm(range(0, 100), mininterval = 1,
+#                desc ="Text You Want"):
+#     sleep(.1)
+
+# from pathlib import Path
+# import pathlib
+# print(pathlib.Path().absolute())
+from tqdm.notebook import tqdm_notebook
+import time
+for i in tqdm_notebook(range(10)):
+    time.sleep(0.5)
