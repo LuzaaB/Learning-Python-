@@ -91,22 +91,28 @@
 # print(list_len)
 # print(range(list_len))
 
-import json
-import requests
+# import json
+# import requests
 
-base_url = "https://api.mangadex.org"
-search_manga_url = f"{base_url}/manga"
-CHAP_ID_URL = "https://api.mangadex.org/at-home/server/{chapter_id}"
+# base_url = "https://api.mangadex.org"
+# search_manga_url = f"{base_url}/manga"
+# CHAP_ID_URL = "https://api.mangadex.org/at-home/server/{chapter_id}"
 
 
-title = input("Enter the name of the manga : ")
+# title = input("Enter the name of the manga : ")
 
-r = requests.get(search_manga_url, params={"title" : title})
-resp = r.json()["data"]
-first = resp[0]
-first_id, first_title = first["id"], first["attributes"]["title"]["en"]
+# r = requests.get(search_manga_url, params={"title" : title})
+# resp = r.json()["data"]
+# first = resp[0]
+# first_id, first_title = first["id"], first["attributes"]["title"]["en"]
 
-chap_list_url = f"{search_manga_url}/{first_id}/feed"
-chap_list = requests.get(chap_list_url, params = {"translatedLanguage[]":"pt-br"})
-CHAPTER_LIST = chap_list.json()
-print(json.dumps(CHAPTER_LIST, indent=4))
+# chap_list_url = f"{search_manga_url}/{first_id}/feed"
+# chap_list = requests.get(chap_list_url, params = {"translatedLanguage[]":"pt-br"})
+# CHAPTER_LIST = chap_list.json()
+# print(json.dumps(CHAPTER_LIST, indent=4))
+
+
+from tqdm import tqdm
+
+for i in tqdm(range(999999999)):
+    pass

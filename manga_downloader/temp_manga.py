@@ -1,17 +1,18 @@
 import requests
 import json
-from typing import List, Dict
-from PIL import Image
 import io
-
 import dataclasses
+import img2pdf
+
+from typing import List, Dict
 from pathlib import Path
+from tqdm import tqdm
 
 ## sys.argv  
 import sys          ## LATER, but before argparse
 import argparse     ### argument parsing. FOR LATER>
-
 ## os.path or pathlib  
+
 LAST_UNIQUE_CHAP_ID = 9999.0
 
 languages = ["en"]
@@ -66,13 +67,13 @@ class Chapter:
         return newStr     
 
 
-    def download_image_content(self):
+    def download_image_content(self, parent_manga):
         
         img_array = []
         
         ### manage and check the appropriate paths (create if not created)
-        # folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
-        # folder_path.mkdir(exist_ok=True, parents=True)
+        folder_path = Path(parent_manga.sanitized_title) / Path(self.sanitized_title) 
+        folder_path.mkdir(exist_ok=True, parents=True)
         
         ### fill dl data
         # chap_id_url = f"https://api.mangadex.org/at-home/server/{self.id}"
@@ -87,12 +88,10 @@ class Chapter:
             self.page_paths.append(img)
         
         ### actual download
-        # for idx, page in enumerate(self.page_paths):
         for page in self.page_paths:
             dl_url = PAGE_DL_URL.format(HOST_URL=self.dl_host_url, CHAP_HASH=self.dl_hash, PAGE=page)
             dl_resp = requests.get(dl_url)
-            # self.page_images.append(dl_resp.content)
-            img_array.append(Image.open(io.BytesIO(dl_resp.content)))
+            img_array.append(dl_resp.content)           
             
         return img_array
 
@@ -223,9 +222,11 @@ class Manga:
         for volume, chapters in self.volume_dict.items():
             ###### per volume task   ###
             img_content_list = []
+            
             for chap in chapters:
-                print(f"Downloading chapter {chap}")
-                img_content_list.extend(chap.download_image_content())
+                print(f"\nDownloading chapter {chap}")
+                page_images = chap.download_image_content(self)
+                img_content_list.extend(page_images)
             
             ## os.path.join(A, B) => A/B
             ### Path(A) / B
@@ -233,11 +234,9 @@ class Manga:
             root_dir.mkdir(exist_ok=True)
             
             pdf_path = root_dir / f"Volume {volume}.pdf"
-            img_content_list[0].save(pdf_path, "PDF" , 
-                                     resolution=100.0, 
-                                     save_all=True, 
-                                     append_images=img_content_list[1:])
             
+            with open(pdf_path, "wb") as f:
+                f.write(img2pdf.convert(img_content_list))
             
 
 def get_first_result(chap_search_url_response):
@@ -269,16 +268,9 @@ def main():
     manga._sort_volume()
     print(manga.get_pretty_vol_dump_str())
     
+    # manga.volume_dict[1.0] = (manga.volume_dict[1.0])[:1]
     manga.download_and_make_vol_pdf()
-    # for each in manga.chapter_list[:1]: #
-    #     each.download_image_content(manga)
-    
-    # manga.dump_to_file()
+
     
 if __name__ == "__main__":
     main() 
-    
-
-# 1. Directory structure
-# 2. from resp.content
-#    grouping into volumes
