@@ -14,3 +14,4 @@ This folder contains programs used to download manga via Mangadex.
 - After_the_Rain.json : example of all the useful data extracted from the data sent by the website  
   (contains everything needed for downloading)
 - After the Rain.json : same as above but doesn't contain chapter pages (images) data
+- volsplit.py : program to test new things before adding it to temp_manga.py
