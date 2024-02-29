@@ -11,3 +11,16 @@ print("Company Name of the second car : ",ford_mustang.make)
 print("Model of the second car : ",ford_mustang.model)
 print("Manufactured Year Name of the second car : ",ford_mustang.year)
 print("Max Speed of the second car : ",ford_mustang.max_speed)
+
+print(ford_mustang.accelerate(100))
+print(ford_mustang.brake(50))
+print(ford_mustang.brake(80))
+print(ford_mustang.stop())
+print(ford_mustang.accelerate(100))
+
+
+""" Manually providing the instances """
+print(Car.start(ford_mustang))
+print(Car.accelerate(ford_mustang, 200))
+print(Car.brake(ford_mustang, 100))
+print(Car.stop(ford_mustang))
