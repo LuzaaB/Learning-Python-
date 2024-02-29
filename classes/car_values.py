@@ -24,3 +24,9 @@ print(Car.start(ford_mustang))
 print(Car.accelerate(ford_mustang, 200))
 print(Car.brake(ford_mustang, 100))
 print(Car.stop(ford_mustang))
+
+# str(toyota_camry) - use in terminal directly
+print(toyota_camry)
+
+# toyota_camry - use in terminal directly
+print(repr(toyota_camry))

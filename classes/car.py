@@ -33,3 +33,15 @@ class Car:
         else:
             self.speed = 0
         print(f"Braking to {self.speed} km/h...")
+        
+    def __str__(self) -> str:
+        return f"{self.make}, {self.model}, {self.color}: ({self.year})"
+    
+    def __repr__(self) -> str:
+        return (
+            f"{type(self).__name__}"
+            f'(make = "{self.make}", '
+            f'model = "{self.model}", '
+            f"year = {self.year}, "
+            f'color = "{self.color}")'
+        )
