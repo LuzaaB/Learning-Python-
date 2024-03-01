@@ -6,7 +6,6 @@ import img2pdf
 from typing import List, Dict
 from pathlib import Path
 from tqdm import tqdm
-from time import sleep
 
 ## sys.argv  
 import io
@@ -268,7 +267,7 @@ def main():
     print(manga.get_pretty_vol_dump_str())
     
     # manga.volume_dict[1.0] = (manga.volume_dict[1.0])[:1]
-    manga.download_and_make_vol_pdf()[:1]
+    manga.download_and_make_vol_pdf()
 
     
 if __name__ == "__main__":
