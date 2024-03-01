@@ -26,3 +26,12 @@ class ThreePoint:
     
     def __repr__(self) -> str:
         return f"{type(self).__name__} ({self.x}, {self.y}, {self.z})"
+    
+    
+# Values
+print(ThreePoint.from_sequence((4,8,16)))
+
+point = ThreePoint(7,14,21)
+print(point.from_sequence((3,6,9)))
+
+point.show_intro_message("Python Developer")

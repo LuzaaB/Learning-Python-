@@ -17,3 +17,8 @@ class Helicopter(Aircraft):
     def show_techincal_specs(self):
         super().show_techincal_specs()
         print(f"Number of rotors : {self.num_rotors}")
+        
+
+# Values
+sikorsky_UH60 = Helicopter(1490, 9979, 278, 2)
+print(sikorsky_UH60.show_techincal_specs())
