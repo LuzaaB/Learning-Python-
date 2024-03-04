@@ -35,3 +35,4 @@ class RangeIterator:
 numbers = RangeIterator(2,10,2)
 for num in numbers:
     print(num)
+print(list(numbers))

@@ -19,24 +19,24 @@ class SequenceIterator:
         
 # syntactic sugar
 
-seq = SequenceIterator("Luzaa Byanjankar")
+# seq = SequenceIterator("Luzaa Byanjankar")
 
-###
-iterator = iter(seq)
-itertor = seq.__iter__()
+# ###
+# iterator = iter(seq)
+# itertor = seq.__iter__()
 
-item = next(iterator)
-while True:
-    print(item)
-    try:
-        item = next(iterator)
-    except StopIteration:
-        break
+# item = next(iterator)
+# while True:
+#     print(item)
+#     try:
+#         item = next(iterator)
+#     except StopIteration:
+#         break
     
-for each in seq:
-    print(each)
+# for each in seq:
+#     print(each)
     
-print("2nd loop")
+# print("2nd loop")
 
-for each in seq:
-    print(each)
+# for each in seq:
+#     print(each)

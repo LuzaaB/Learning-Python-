@@ -15,5 +15,5 @@ def to_string(numbers):
 
 
 sample  = range(20)
-list (to_cube(to_even(sample)))
-list(to_square(to_odd(sample)))
+list(to_string(to_cube(to_even(sample))))
+list(to_string(to_square(to_odd(sample))))
