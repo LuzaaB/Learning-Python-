@@ -178,11 +178,12 @@ class Manga:
         
         chap_list_url = f"{SEARCH_MANGA_URL}/{self.id}/feed"
         chpt_list = requests.get(chap_list_url, params={"translatedLanguage[]":languages})
-        CHAPTER_LIST = chpt_list.json()
+        resp  = chpt_list.json()
 
         global LAST_UNIQUE_CHAP_ID
         
-        for each in CHAPTER_LIST["data"]:
+        CHAPTER_LIST = resp["data"]
+        for each in CHAPTER_LIST:
             chap_id = each["id"]
             chap_title = each["attributes"]["title"]
             
