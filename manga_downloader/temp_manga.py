@@ -285,10 +285,12 @@ def main():
     else:
         start = float(start)
         
-    if stop == "" or stop == "None":
-        stop = None
-    else:
-        stop = float(stop)
+    # if stop == "" or stop == "None":
+    #     stop = None
+    # else:
+    #     stop = float(stop)
+        
+    stop = None if (stop == "" or stop == "None") else float(stop)
         
     # order = {"rating" : "desc" , "followedCount" : "desc"}
     # final_order = {}
