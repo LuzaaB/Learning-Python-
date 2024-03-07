@@ -1,6 +1,3 @@
-
-import json
-
 class Person:
     def __init__(self, name, phone):
         self.name = name
@@ -8,7 +5,6 @@ class Person:
     
     def __repr__(self):
         return f"Person(Name:{self.name}, Phone-Number:{self.phone})"
-
 
 
 class Database:
@@ -35,7 +31,6 @@ class Database:
             
     def print_db(self):
         print(self.data)
-    
     
 
 db = Database()
