@@ -106,12 +106,26 @@ resp = r.json()["data"]
 first = resp[0]
 first_id, first_title = first["id"], first["attributes"]["title"]["en"]
 
-chap_list_url = f"{search_manga_url}/{first_id}/feed"
-chap_list = requests.get(chap_list_url, params = {"translatedLanguage[]":"en"})
-CHAPTER_LIST = chap_list.json()
+total_resp = []
+limit = 100
+offset = 0
+counter = True
+while counter:
+    chap_list_url = f"{search_manga_url}/{first_id}/feed"
+    chap_list = requests.get(chap_list_url, params = {"translatedLanguage[]":"en","offset":offset})
+    list_resp = chap_list.json()
+    total_resp.append(list_resp["data"])
+    if list_resp["total"] > limit:
+        offset += 100
+        limit += 100
+    elif list_resp["total"] < limit:
+        # offset = 100 - list_resp["total"]
+        counter = False
+        
+
 # print(json.dumps(CHAPTER_LIST, indent=4))
-with open("KINDAICHI.json", "w") as f:
-    f.write(json.dumps(CHAPTER_LIST, indent=4))
+with open("K.json", "w") as f:
+    f.write(json.dumps(total_resp, indent=4))
 
 # from tqdm import tqdm
 # from time import sleep
