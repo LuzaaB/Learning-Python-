@@ -76,11 +76,6 @@ class Range:
         raise StopIteration()
         
         
-        
-    
-    
-    
 test = Range(1, 10, 2)
 print(list(test))
 print(list(test))
-
