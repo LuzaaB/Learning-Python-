@@ -176,41 +176,65 @@ class Manga:
         chapters from the feed (this does not include the chapter's hash and 
         page filenames or page lists) """        
         
+        CHAPTER_LIST = []
+        counter = True
+        limit = 100
+        offset = 0
         chap_list_url = f"{SEARCH_MANGA_URL}/{self.id}/feed"
-        chpt_list = requests.get(chap_list_url, params={"translatedLanguage[]":languages})
-        resp  = chpt_list.json()
-
+        while counter:
+            chpt_list = requests.get(chap_list_url, params={"translatedLanguage[]":languages, "offset":offset})
+            resp  = chpt_list.json()
+            CHAPTER_LIST.append(resp["data"])
+            if resp["total"] > limit:
+                offset += 100
+                limit += 100
+            elif resp["total"] < limit:
+                counter = False
+            
         global LAST_UNIQUE_CHAP_ID
         
-        CHAPTER_LIST = resp["data"]
-        for each in CHAPTER_LIST:
-            chap_id = each["id"]
-            chap_title = each["attributes"]["title"]
-            
-            chap_num = each["attributes"]["chapter"]
-            if chap_num is None or chap_num == "":
-                chap_num = LAST_UNIQUE_CHAP_ID
-                LAST_UNIQUE_CHAP_ID += 1.0
-            else:
-                chap_num = float(each["attributes"]["chapter"])
-            
-            vol = each["attributes"]["volume"]
-            if vol is None or  vol == "" :
-                vol_num = 9999.0
-            else:
-                vol_num = float(each["attributes"]["volume"])
-            
-            num_pages = int(each["attributes"]["pages"])
-            
-            chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages)
-            self.chapter_list.append(chapter)
-        ##     print(f'chapter list {self.chapter_list}')
+        for chap_list in CHAPTER_LIST:    
+            for each in chap_list:
+                chap_id = each["id"]
+                chap_title = each["attributes"]["title"]
+                
+                chap_num = each["attributes"]["chapter"]
+                if chap_num is None or chap_num == "":
+                    chap_num = LAST_UNIQUE_CHAP_ID
+                    LAST_UNIQUE_CHAP_ID += 1.0
+                else:
+                    chap_num = float(each["attributes"]["chapter"])
+                
+                vol = each["attributes"]["volume"]
+                if vol is None or  vol == "" :
+                    vol_num = 9999.0
+                else:
+                    vol_num = float(each["attributes"]["volume"])
+                
+                num_pages = int(each["attributes"]["pages"])
+                
+                chapter = Chapter(chap_id, chap_title, chap_num, vol_num, num_pages)
+                self.chapter_list.append(chapter)
+            ##     print(f'chapter list {self.chapter_list}')
         self._sort_chapters()
         
         
-    def download_and_make_vol_pdf(self):
+    def download_and_make_vol_pdf(self, start=None, stop=None):
     
         for volume, chapters in self.volume_dict.items():
+
+            if start is None:
+                pass
+            elif start > volume:
+                continue
+            
+            if stop is None:
+                pass
+            elif stop < volume:
+                break
+            
+            print("Downloading volume ", volume)
+            # continue
             ###### per volume task   ###
             root_dir = Path(f"{self.sanitized_title}")  
             root_dir.mkdir(exist_ok=True)
@@ -219,8 +243,6 @@ class Manga:
             # full_path = "E:\Python\Learning-Python\manga_downloader\"+pdf_path
             full_path = Path('E:')/'Python'/'Learning-Python'/'manga_downloader'/pdf_path
             
-            img_content_list = []
-            
             print(pdf_path)
             
             if Path(pdf_path).exists():
@@ -228,6 +250,8 @@ class Manga:
                 print(f'Volume {volume} already exists.\n')
                 continue
                 
+            img_content_list = []
+            
             for chap in chapters:                
                 print(f"\nDownloading chapter {chap}")
                 page_images = chap.download_image_content()
@@ -253,7 +277,19 @@ def get_first_result(chap_search_url_response):
 
 def main():
     title = input("Enter manga name : ")
+    start = input("Enter start volume/ Enter None/ Press Enter : ")
+    stop = input("Enter stop volume/ Enter None/ Press Enter : ")
     
+    if start == "" or start == "None":
+        start = None
+    else:
+        start = float(start)
+        
+    if stop == "" or stop == "None":
+        stop = None
+    else:
+        stop = float(stop)
+        
     # order = {"rating" : "desc" , "followedCount" : "desc"}
     # final_order = {}
     # for key, value in order.items():
@@ -268,7 +304,7 @@ def main():
     print(manga.get_pretty_vol_dump_str())
     
     # manga.volume_dict[1.0] = (manga.volume_dict[1.0])[:1]
-    manga.download_and_make_vol_pdf()
+    manga.download_and_make_vol_pdf(start, stop)
 
     
 if __name__ == "__main__":
