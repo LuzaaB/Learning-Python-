@@ -26,7 +26,6 @@ class Solution:
 
             # DRY - dont repeat yourself
 
-            print(prime_factors)
             if prime_factors == [2]:
                 return True
             elif prime_factors == [3]:
