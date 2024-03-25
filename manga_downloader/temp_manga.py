@@ -7,12 +7,6 @@ from typing import List, Dict
 from pathlib import Path
 from tqdm import tqdm
 
-## sys.argv  
-import io
-import sys          ## LATER, but before argparse
-import argparse     ### argument parsing. FOR LATER>
-## os.path or pathlib  
-
 LAST_UNIQUE_CHAP_ID = 9999.0
 
 languages = ["en"]
