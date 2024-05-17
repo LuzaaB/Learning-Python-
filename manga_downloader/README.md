@@ -2,7 +2,14 @@
 
 A manga downloader program using MangaDex API.
 
-
+### Modules Used :
+- requests
+- json
+- dataclasses
+- img2pdf
+- typing(Dict, List)
+- pathlib(Path)
+- tqdm
 
 ### Contents
 - ***chapList.json*** : example of how the json data is sent from the website
