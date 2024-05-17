@@ -6,7 +6,7 @@ A manga downloader program using MangaDex API.
 - Modules Used
 - Description of each file
 
-### Modules Used :
+#### Modules Used :
 - requests
 - json
 - dataclasses
@@ -15,7 +15,7 @@ A manga downloader program using MangaDex API.
 - pathlib(Path)
 - tqdm
 
-### Description of each file
+#### Description of each file
 - ***chapList.json*** : example of how the json data is sent from the website
 - ***chapterlist.json*** : example of how the json data is sent from the website
 - ***JSON_CHAP_LIST.json*** : example of extracted contents of chapters ie. images of the chapters
